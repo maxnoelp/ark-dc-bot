@@ -3,10 +3,12 @@ import discord
 import asyncio
 from dotenv import load_dotenv
 from discord.ext import commands
-from cogs.ticket import TicketView
+from cogs.ticket_cog.ticket import TicketView
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+
+ticket_on = os.getenv("TICKET_ON")
 
 intents = discord.Intents.default()
 intents.guilds = True
@@ -33,7 +35,8 @@ async def on_ready():
 
 async def main():
     async with bot:
-        await bot.load_extension("cogs.ticket")
+        if ticket_on:
+            await bot.load_extension("cogs.ticket_cog.ticket")
         await bot.start(TOKEN)
 
 
