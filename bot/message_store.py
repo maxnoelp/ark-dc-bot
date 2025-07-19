@@ -39,9 +39,23 @@ def remove(guild_id: int, msg_id: int):
 # ---------- Tickets ----------
 def add_ticket(guild_id: int, channel_id: int, first_msg_id: int):
     data = _read()
-    data.setdefault(str(guild_id), {}).setdefault("tickets", {})[str(channel_id)] = (
-        first_msg_id
-    )
+    key = str(guild_id)
+    node = data.get(key)
+
+    # Migration: falls alt (Liste) -> in Dict überführen
+    if node is None:
+        node = {}
+        data[key] = node
+    elif isinstance(node, list):
+        node = {"legacy": node}  # alte IDs sichern
+        data[key] = node
+    elif not isinstance(node, dict):
+        # Irgendwas Unerwartetes -> überschreiben (oder sichern)
+        node = {"_raw": str(node)}
+        data[key] = node
+
+    tickets = node.setdefault("tickets", {})
+    tickets[str(channel_id)] = first_msg_id
     _write(data)
 
 
