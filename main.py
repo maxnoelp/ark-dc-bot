@@ -1,4 +1,6 @@
-import discord, asyncio, os
+import discord
+import asyncio
+import os
 from dotenv import load_dotenv
 from discord.ext import commands
 from bot import message_store
